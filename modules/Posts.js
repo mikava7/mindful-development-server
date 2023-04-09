@@ -18,6 +18,15 @@ const PostSchema = new mongoose.Schema(
 			required: true,
 		},
 		category: String,
+		tags: {
+			type: Array,
+			default: [],
+		},
+		viewCount: {
+			type: Number,
+			default: 0,
+		},
+		imageUrl: String,
 	},
 	{
 		timestamps: true,

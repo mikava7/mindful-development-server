@@ -8,8 +8,16 @@ export const loginValidator = [
 
 // Validation for register endpoint
 export const registerValidator = [
-	body("email").isEmail(), // Check if email is valid
-	body("password").isLength({ min: 5 }), // Check if password length is at least 5 characters
 	body("fullName").isLength({ min: 3 }), // Check if full name length is at least 3 characters
+	body("password").isLength({ min: 5 }), // Check if password length is at least 5 characters
+	body("email").isEmail(), // Check if email is valid
 	body("avatarURL").optional().isURL(), // Check if avatarURL is optional and is a valid URL
+];
+
+// Validation for post create endpoint
+export const postCreateValidation = [
+	body("title").isLength({ min: 3 }).isString(), // Check if title length is at least 3 characters and is a string
+	body("text").isLength({ min: 5 }).isString(), // Check if text length is at least 5 characters and is a string
+	body("tags").optional().isString(), // Check if tags is optional and is a string
+	body("imageURL").optional().isString(), // Check if imageURL is optional and is a string
 ];
