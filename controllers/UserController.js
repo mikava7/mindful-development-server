@@ -1,21 +1,18 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
+import validationErrors from "../validations/validationErrors.js";
 import User from "../modules/User.js";
 import dotenv from "dotenv";
-
+// load environment variables from .env file
 dotenv.config();
 const secretKey = process.env.SECRET_KEY;
 
 export const registerUser = async (req, res) => {
 	try {
 		// validate input fields using express-validator
-		const error = validationResult(req);
+		validationErrors(req, res);
 
-		// if there are errors, return 400 status with the array of errors
-		if (!error.isEmpty()) {
-			return res.status(400).json(error.array());
-		}
 		const { fullName, password, email, avatarUrl } = req.body;
 
 		// generate a salt and hash the password
@@ -43,14 +40,14 @@ export const registerUser = async (req, res) => {
 
 		// remove passwordHash field from user object and return the user object with the JWT token
 		const { passwordHash, ...userInfo } = newUser._doc;
-		res.json({
+		res.status(201).json({
 			...userInfo,
 			token,
 		});
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
-			message: "Registration failed",
+			message: message.error || "Registration failed",
 		});
 	}
 };
@@ -100,5 +97,24 @@ export const loginUser = async (req, res) => {
 		res.status(500).json({
 			message: "Server error",
 		});
+	}
+};
+
+export const getUserInfo = async (req, res) => {
+	try {
+		// find user by user id in token payload
+		const user = await User.findById(req.userId);
+
+		// if user not found, return 404 status with error message
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		// remove passwordHash field from user object and return the user object
+		const { passwordHash, ...userData } = user._doc;
+		res.json(userData);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: "No excess" });
 	}
 };
