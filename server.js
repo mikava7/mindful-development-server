@@ -28,7 +28,7 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use(userRouter);
 app.use(postRoutes);
-app.post("/uploads", upload.single(""), (req, res) => {
+app.post("/uploads", upload.single("image"), (req, res) => {
 	res.json({
 		url: `/uploads/${req.file.originalname}`,
 	});
