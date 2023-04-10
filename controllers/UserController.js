@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-// import { validationResult } from "express-validator";
-import validationErrors from "../validations/validationErrors.js";
 import User from "../modules/User.js";
 import dotenv from "dotenv";
 // load environment variables from .env file
@@ -10,9 +8,6 @@ const secretKey = process.env.SECRET_KEY;
 
 export const registerUser = async (req, res) => {
 	try {
-		// validate input fields using express-validator
-		validationErrors(req, res);
-
 		const { fullName, password, email, avatarUrl } = req.body;
 
 		// generate a salt and hash the password
