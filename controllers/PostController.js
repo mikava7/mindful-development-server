@@ -60,23 +60,28 @@ export const getAllPost = async (req, res) => {
 
 export const getSinglePost = async (req, res) => {
 	try {
+		// Get the post ID from the request parameters(dynamic parameter)
 		const postId = req.params.id;
 
-		// Increment the viewsCount of the post by 1
+		// Increment the viewCount field of the post by 1 using findOneAndUpdate()
+		// and the $inc operator
 		const post = await Post.findOneAndUpdate(
 			{ _id: postId },
 			{ $inc: { viewCount: 1 } },
-			{ new: true },
+			{ new: true }, // Return the updated document
 		);
 
+		// If the post is not found, return a 404 error
 		if (!post) {
 			return res.status(404).json({
 				message: "post not found",
 			});
 		}
 
+		// Return the updated post object with a 200 OK status code
 		res.status(200).json({ post });
 	} catch (error) {
+		// If there's an error, log it and return an error response with an error message
 		console.log(error);
 		res.status(500).json({
 			message: error.message || "can't get post",
