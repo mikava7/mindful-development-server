@@ -45,7 +45,7 @@ export const getLastFiveTags = async (req, res) => {
 export const createPost = async (req, res) => {
 	try {
 		// get the input fields from the request body
-		const { title, content, category, tags, author } = req.body;
+		const { title, content, category, tags, imageUrl, author } = req.body;
 
 		//create new post object with input fields and author ID
 		const newPost = await Post.create({
@@ -53,6 +53,7 @@ export const createPost = async (req, res) => {
 			content,
 			category,
 			tags,
+			imageUrl,
 			author: req.userId,
 		});
 
@@ -172,7 +173,7 @@ export const updatePost = async (req, res) => {
 			},
 		);
 
-		res.status(200).json({ success: true, message: "Updated successfully", post: updatedPost });
+		res.status(200).json({ success: true, message: "Updated successfully", updatedPost });
 	} catch (error) {
 		// If an error occurred during the removal process, log the error and return an error response
 		console.log(error);

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import connectToDB from "./connect.js";
 import userRouter from "./routes/userRoute.js";
-import postRoutes from "./routes/postRoutes.js";
+import postRouter from "./routes/postRoutes.js";
 import tagsRouter from "./routes/tagsRoutes.js";
 
 // load environment variables from .env file
@@ -15,7 +15,7 @@ const port = 5000; // Use PORT value from .env file or fallback to 4000
 app.use(cors());
 app.use(express.json());
 app.use(userRouter);
-app.use(postRoutes);
+app.use(postRouter);
 
 app.use(tagsRouter);
 // Serve static files from the "uploads" directory

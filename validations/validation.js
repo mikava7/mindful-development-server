@@ -19,5 +19,5 @@ export const postCreateValidation = [
 	body("title").isLength({ min: 3 }).isString(), // Check if title length is at least 3 characters and is a string
 	body("content").isLength({ min: 5 }).isString(), // Check if text length is at least 5 characters and is a string
 	body("tags").optional().isArray(), // Check if tags is optional and is a string
-	body("imageURL").optional().isString(), // Check if imageURL is optional and is a string
+	body("imageUrl").optional().isString(), // Check if imageURL is optional and is a string
 ];

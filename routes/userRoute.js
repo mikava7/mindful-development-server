@@ -5,8 +5,8 @@ import validationErrors from "../validations/validationErrors.js";
 import authentication from "../validations/authentication.js";
 const userRouter = express.Router();
 
-userRouter.post("/register", registerValidator, validationErrors, registerUser);
-userRouter.post("/login", loginValidator, validationErrors, loginUser);
-userRouter.get("/user-info", authentication, getUserInfo);
+userRouter.post("/auth/register", registerValidator, validationErrors, registerUser);
+userRouter.post("/auth/login", loginValidator, validationErrors, loginUser);
+userRouter.get("/auth/user-info", authentication, getUserInfo);
 
 export default userRouter;

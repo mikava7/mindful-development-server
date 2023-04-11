@@ -12,7 +12,6 @@ import validationErrors from "../validations/validationErrors.js";
 
 const postRouter = express.Router();
 
-// postRouter.post("/posts", authentication, postCreateValidation, createPost);
 postRouter.post("/posts", authentication, postCreateValidation, validationErrors, createPost);
 
 postRouter.get("/posts", getAllPost);
