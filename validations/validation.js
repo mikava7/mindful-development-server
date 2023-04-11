@@ -17,7 +17,7 @@ export const registerValidator = [
 // Validation for post create endpoint
 export const postCreateValidation = [
 	body("title").isLength({ min: 3 }).isString(), // Check if title length is at least 3 characters and is a string
-	body("text").isLength({ min: 5 }).isString(), // Check if text length is at least 5 characters and is a string
-	body("tags").optional().isString(), // Check if tags is optional and is a string
+	body("content").isLength({ min: 5 }).isString(), // Check if text length is at least 5 characters and is a string
+	body("tags").optional().isArray(), // Check if tags is optional and is a string
 	body("imageURL").optional().isString(), // Check if imageURL is optional and is a string
 ];

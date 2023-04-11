@@ -5,6 +5,43 @@ import dotenv from "dotenv";
 dotenv.config();
 const secretKey = process.env.SECRET_KEY;
 
+export const getAllTags = async (req, res) => {
+	try {
+		const tags = await Post.aggregate([
+			{ $unwind: "$tags" }, // deconstructs the tags array into separate documents
+			{ $group: { _id: "$tags" } }, // groups the documents by tag value
+			{ $project: { _id: 0, tag: "$_id" } }, // renames the "_id" field to "tag"
+		]);
+		res.status(200).json(tags);
+	} catch (error) {
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const getLastFiveTags = async (req, res) => {
+	try {
+		// Find the last 5 posts, sorted by creation date (newest first)
+		const lastFivePosts = await Post.find().sort({ createdAt: -1 }).limit(5);
+
+		// Initialize an empty array to hold the tags from the last 5 posts
+		const lastFiveTags = [];
+
+		// Iterate over each post and push its tags to the lastFiveTags array
+		lastFivePosts.forEach((post) => {
+			lastFiveTags.push(...post.tags);
+		});
+
+		// Create a new array with only the unique tags from lastFiveTags
+		const uniqueLastFiveTags = [...new Set(lastFiveTags)];
+
+		// Return the first 5 unique tags as a JSON response
+		res.status(200).json(uniqueLastFiveTags.slice(0, 5));
+	} catch (error) {
+		// If there is an error, return a 500 error response with a message
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
 export const createPost = async (req, res) => {
 	try {
 		// get the input fields from the request body
@@ -89,14 +126,13 @@ export const getSinglePost = async (req, res) => {
 	}
 };
 
-// Function to remove a post by ID
 export const removePost = async (req, res) => {
 	try {
 		// Get the ID of the post to remove from the request parameters
-		const userId = req.params.id;
+		const postId = req.params.id;
 
 		// Find the post by ID and ensure that the user making the request is the author
-		const removedPost = await Post.findOneAndDelete({ _id: userId, author: req.userId });
+		const removedPost = await Post.findOneAndDelete({ _id: postId, author: req.userId });
 
 		// If no post was found, return an error response with a message
 		if (!removedPost) {

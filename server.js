@@ -3,6 +3,8 @@ import cors from "cors";
 import connectToDB from "./connect.js";
 import userRouter from "./routes/userRoute.js";
 import postRoutes from "./routes/postRoutes.js";
+import tagsRouter from "./routes/tagsRoutes.js";
+
 // load environment variables from .env file
 import dotenv from "dotenv";
 dotenv.config();
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use(userRouter);
 app.use(postRoutes);
 
+app.use(tagsRouter);
 // Serve static files from the "uploads" directory
 app.use("/uploads", express.static("uploads"));
 
