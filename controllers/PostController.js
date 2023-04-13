@@ -45,16 +45,18 @@ export const getLastFiveTags = async (req, res) => {
 export const createPost = async (req, res) => {
 	try {
 		// get the input fields from the request body
-		const { title, content, category, tags, imageUrl, author } = req.body;
+		const { title, content, tags, imageUrl, author } = req.body;
 
 		//create new post object with input fields and author ID
 		const newPost = await Post.create({
 			title,
 			content,
-			category,
 			tags,
 			imageUrl,
 			author: req.userId,
+		}).catch((error) => {
+			console.log(error);
+			throw error;
 		});
 
 		//return newly created post object
@@ -62,7 +64,7 @@ export const createPost = async (req, res) => {
 		console.log(newPost);
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({
+		res.status(501).json({
 			message: error.message || "Failed",
 		});
 	}
@@ -117,7 +119,7 @@ export const getSinglePost = async (req, res) => {
 		}
 
 		// Return the updated post object with a 200 OK status code
-		res.status(200).json({ post });
+		res.status(200).json({ post }.populate("author"));
 	} catch (error) {
 		// If there's an error, log it and return an error response with an error message
 		console.log(error);
