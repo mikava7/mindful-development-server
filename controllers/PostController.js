@@ -103,13 +103,11 @@ export const getSinglePost = async (req, res) => {
 		// Get the post ID from the request parameters(dynamic parameter)
 		const postId = req.params.id;
 
-		// Increment the viewCount field of the post by 1 using findOneAndUpdate()
-		// and the $inc operator
 		const post = await Post.findOneAndUpdate(
 			{ _id: postId },
 			{ $inc: { viewCount: 1 } },
 			{ new: true }, // Return the updated document
-		);
+		).populate("author");
 
 		// If the post is not found, return a 404 error
 		if (!post) {
@@ -118,8 +116,7 @@ export const getSinglePost = async (req, res) => {
 			});
 		}
 
-		// Return the updated post object with a 200 OK status code
-		res.status(200).json({ post }.populate("author"));
+		res.status(200).json({ post });
 	} catch (error) {
 		// If there's an error, log it and return an error response with an error message
 		console.log(error);
@@ -149,7 +146,7 @@ export const removePost = async (req, res) => {
 	} catch (error) {
 		// If an error occurred during the removal process, log the error and return an error response
 		console.log(error);
-		res.status(500).json({
+		res.status(501).json({
 			message: error.message || "Can't delete post",
 		});
 	}

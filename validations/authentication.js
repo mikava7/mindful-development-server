@@ -5,7 +5,7 @@ dotenv.config();
 const secretKey = process.env.SECRET_KEY;
 
 export default (req, res, next) => {
-	// Extract token from Authorization header and remove "Bearer " string
+	// Extract token from Authorization header and remove "Bearer" string
 	const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
 
 	if (token) {
