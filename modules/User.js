@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Favorites from './Favorites.js'
 
 // define user schema
 const UserSchema = new mongoose.Schema(
@@ -16,6 +17,16 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+
+		favorites: {
+			type:[] , 
+			default: [],
+		},
+		readLater: {
+			type:[] , 
+			default: [],
+		},
+
 		avatarUrl: String,
 	},
 	{
