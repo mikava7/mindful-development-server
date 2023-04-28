@@ -1,4 +1,5 @@
 import Post from "../modules/Posts.js";
+import Comment from '../modules/Comments.js'
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 // load environment variables from .env file
@@ -54,9 +55,6 @@ export const createPost = async (req, res) => {
 			tags,
 			imageUrl,
 			author: req.userId,
-		}).catch((error) => {
-			console.log(error);
-			throw error;
 		});
 
 		//return newly created post object
@@ -106,8 +104,9 @@ export const getSinglePost = async (req, res) => {
 		const post = await Post.findOneAndUpdate(
 			{ _id: postId },
 			{ $inc: { viewCount: 1 } },
-			{ new: true }, // Return the updated document
-		).populate("author");
+			{ new: true } // Return the updated document
+		);
+			console.log("post", post)
 
 		// If the post is not found, return a 404 error
 		if (!post) {
@@ -130,9 +129,10 @@ export const removePost = async (req, res) => {
 	try {
 		// Get the ID of the post to remove from the request parameters
 		const postId = req.params.id;
-
+console.log("in remove post", req.userId )
 		// Find the post by ID and ensure that the user making the request is the author
 		const removedPost = await Post.findOneAndDelete({ _id: postId, author: req.userId });
+		console.log("in remove post post id", removedPost)
 
 		// If no post was found, return an error response with a message
 		if (!removedPost) {
@@ -181,3 +181,8 @@ export const updatePost = async (req, res) => {
 		});
 	}
 };
+
+
+
+
+

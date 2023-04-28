@@ -4,11 +4,13 @@ import connectToDB from "./connect.js";
 import userRouter from "./routes/userRoute.js";
 import postRouter from "./routes/postRoutes.js";
 import tagsRouter from "./routes/tagsRoutes.js";
-
+import commentRouter from "./routes/commentsRoute.js";
+import favoritesRouter from "./routes/favoritesRoutes.js";
 // load environment variables from .env file
 import dotenv from "dotenv";
 dotenv.config();
 import multer from "multer";
+
 
 const connection_string = process.env.MONGODB_URI;
 const app = express();
@@ -18,6 +20,10 @@ app.use(express.json());
 app.use(userRouter);
 app.use(postRouter);
 app.use(tagsRouter);
+app.use(commentRouter);
+app.use(favoritesRouter);
+
+
 // Serve static files from the "uploads" directory
 
 const storage = multer.diskStorage({

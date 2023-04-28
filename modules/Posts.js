@@ -9,10 +9,16 @@ const PostSchema = new mongoose.Schema(
 			required: true,
 		},
 		author: {
-			type: mongoose.Schema.Types.ObjectId, // set the author field to an ObjectId
-			ref: "User", // reference the 'User' model
+			type: mongoose.Schema.Types.ObjectId, 
+			ref: "User", 
 			required: true,
 		},
+		comments:[{
+			 type: mongoose.Schema.Types.ObjectId,
+			 ref: "Comment", 
+			 default: [],
+	}],
+
 		content: {
 			type: String,
 			required: true,

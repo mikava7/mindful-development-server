@@ -4,25 +4,26 @@ import mongoose from "mongoose";
 
 const CommentSchema = new mongoose.Schema(
 	{
-		content: {
-			type: String,
-			required: true,
-		},
-
-		author: {
-			type: mongoose.Schema.Types.ObjectId, // set the author field to an ObjectId
-			ref: "User", // reference the 'User' model
-			required: true,
-		},
-		post: {
-			type: mongoose.Schema.Types.ObjectId, // set the post field to an ObjectId
-			ref: "Post", // reference the 'Post' model
-			required: true,
-		},
+	  content: {
+		type: String,
+		required: true,
+	  },
+	  author: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	  },
+	  post: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Post",
+		required: true,
+	  },
+	  
 	},
 	{
-		timestamps: true,
-	},
-);
+	  timestamps: true,
+	}
+  );
+  
 //export comment model
 export default mongoose.model("Comment", CommentSchema);
