@@ -8,7 +8,7 @@ const secretKey = process.env.SECRET_KEY
 
 export const registerUser = async (req, res) => {
   try {
-    const { fullName, password, email, avatarUrl } = req.body
+    const { fullName, password, email, imageUrl } = req.body
 
     // generate a salt and hash the password
     const salt = await bcrypt.genSalt(10)
@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
     const newUser = await User.create({
       fullName,
       email,
-      avatarUrl,
+      imageUrl,
       passwordHash: hash,
     })
 
@@ -101,16 +101,16 @@ export const loginUser = async (req, res) => {
 export const getUserInfo = async (req, res) => {
   try {
     // find user by user id in token payload
-    const user = await User.findById(req.userId)
+    const userData = await User.findById(req.userId)
 
     // if user not found, return 404 status with error message
-    if (!user) {
+    if (!userData) {
       return res.status(404).json({ message: 'User not found' })
     }
 
     // remove passwordHash field from user object and return the user object
-    const { passwordHash, ...userData } = user._doc
-    res.json(userData)
+    const { passwordHash, ...user } = userData._doc
+    res.json(user)
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'No excess' })
@@ -145,7 +145,8 @@ export const getVisitedPosts = async (req, res) => {
   try {
     const userId = req.userId
     const user = await User.findById(userId).populate('visited')
-    res.status(200).json(user.visited)
+    const reversedVisited = user.visited.reverse() // Reverse the order of visited posts
+    res.status(200).json(reversedVisited)
   } catch (error) {
     console.log(error)
     res.status(500).json({
@@ -153,6 +154,7 @@ export const getVisitedPosts = async (req, res) => {
     })
   }
 }
+
 export const clearHistory = async (req, res) => {
   try {
     const userId = req.userId
@@ -167,5 +169,85 @@ export const clearHistory = async (req, res) => {
     res.status(500).json({
       message: error.message || "can't get visited posts",
     })
+  }
+}
+
+export const addFavorite = async (req, res) => {
+  try {
+    const postId = req.params.postId
+    const userId = req.userId
+    const user = await User.findById(userId)
+
+    if (user.favorites.includes(postId)) {
+      return res.status(400).json({ message: 'Post already in favorites' })
+    } else {
+      user.favorites.push(postId)
+      await user.save()
+    }
+
+    const updatedUser = await User.findById(userId).populate('favorites')
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    return res.status(200).json({
+      message: 'Post added to favorites',
+      favorites: updatedUser.favorites,
+    })
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(500)
+      .json({ message: error.message || "Can't add to favorites" })
+  }
+}
+
+export const removeFavorite = async (req, res) => {
+  try {
+    const postId = req.params.postId
+    console.log('postId from removeFavorite', postId)
+
+    const userId = req.userId
+    console.log('userId from removeFavorite', userId)
+
+    const user = await User.findById(userId)
+
+    if (!user.favorites.includes(postId)) {
+      return res.status(404).json({ message: 'Favorite not found' })
+    }
+    const updatedFavorites = user.favorites.filter(
+      (favorite) => favorite.toString() !== postId
+    )
+    console.log('updatedFavorites removeFavorite', updatedFavorites)
+
+    user.favorites = updatedFavorites
+    user.save()
+
+    return res.status(200).json({
+      message: 'Removed from favorites',
+      favorites: updatedFavorites.favorites,
+    })
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(500)
+      .json({ message: error.message || "can't remove  favorite" })
+  }
+}
+
+export const getFavorites = async (req, res) => {
+  try {
+    const userId = req.userId
+
+    const user = await User.findById(userId)
+    // console.log('user', user)
+
+    const favorites = user.favorites
+    // console.log('favorites', favorites)
+    return res.status(200).json({ favorites })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: 'Server error' })
   }
 }
