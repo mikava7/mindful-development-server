@@ -6,6 +6,9 @@ import {
   addVisitedPost,
   getVisitedPosts,
   clearHistory,
+  addFavorite,
+  getFavorites,
+  removeFavorite,
 } from '../controllers/UserController.js'
 import { registerValidator, loginValidator } from '../validations/validation.js'
 import validationErrors from '../validations/validationErrors.js'
@@ -23,5 +26,9 @@ userRouter.get('/auth/user-info', authentication, getUserInfo)
 userRouter.get('/posts/:id/visited', authentication, addVisitedPost)
 userRouter.get('/auth/:id/history', authentication, getVisitedPosts)
 userRouter.put('/auth/:id/clear-history', authentication, clearHistory)
+
+userRouter.get('/auth/favorites/:userId', authentication, getFavorites)
+userRouter.post('/auth/favorites/:postId', authentication, addFavorite)
+userRouter.delete('/auth/favorites/:postId', authentication, removeFavorite)
 
 export default userRouter

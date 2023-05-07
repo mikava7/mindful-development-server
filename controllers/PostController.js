@@ -3,6 +3,9 @@ import Comment from '../modules/Comments.js'
 import User from '../modules/User.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { ObjectId } from 'mongoose'
+import mongoose from 'mongoose'
+
 // load environment variables from .env file
 dotenv.config()
 const secretKey = process.env.SECRET_KEY
@@ -201,5 +204,68 @@ export const getPost = async (req, res) => {
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Server error' })
+  }
+}
+
+export const likePost = async (req, res) => {
+  try {
+    const { postId } = req.params
+    console.log('postId in likePost', postId)
+    const userId = req.userId
+    console.log('userId in likePost', userId)
+
+    const post = await Post.findById(postId)
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' })
+    }
+
+    if (post.reactedBy.includes(userId)) {
+      return res
+        .status(400)
+        .json({ error: 'User has already reacted to this post', post })
+    } else {
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $push: { reactedBy: req.userId } },
+        { new: true }
+      )
+
+      return res.status(200).json({ post: updatedPost })
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message || "can't like post" })
+  }
+}
+
+export const unLikePost = async (req, res) => {
+  try {
+    const { postId } = req.params
+    console.log('postId in unLikePost', postId)
+
+    const userId = req.userId
+    console.log('userId in unLikePost', userId)
+
+    const post = await Post.findById(postId)
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' })
+    }
+
+    if (!post.reactedBy.includes(userId)) {
+      return res
+        .status(400)
+        .json({ error: 'User has not reacted to this post' })
+    } else {
+      const updatedPost = await Post.findByIdAndUpdate(
+        req.params.postId,
+        { $pull: { reactedBy: req.userId } },
+        { new: true }
+      )
+
+      return res.status(200).json({ post: updatedPost })
+    }
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: error.message || "can't unlike post" })
   }
 }

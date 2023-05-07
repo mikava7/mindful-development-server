@@ -6,6 +6,8 @@ import {
   removePost,
   updatePost,
   getPost,
+  likePost,
+  unLikePost,
 } from '../controllers/PostController.js'
 import { postCreateValidation } from '../validations/validation.js'
 import authentication from '../validations/authentication.js'
@@ -29,6 +31,9 @@ postRouter.get('/posts/:id', getPost)
 postRouter.put('/posts/:id', getSinglePost)
 
 postRouter.delete('/posts/:id', authentication, removePost)
+
+postRouter.put('/likePost/:postId/', authentication, likePost)
+postRouter.delete('/unlikePost/:postId/', authentication, unLikePost)
 
 postRouter.patch(
   '/posts/:id',

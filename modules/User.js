@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import Favorites from './Favorites.js'
 
 // define user schema
 const UserSchema = new mongoose.Schema(
@@ -17,17 +16,21 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
-    favorites: {
-      type: [],
-      default: [],
-    },
-    readLater: {
-      type: [],
-      default: [],
-    },
-
-    avatarUrl: String,
+    reactedTo: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        default: [],
+      },
+    ],
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        default: [],
+      },
+    ],
+    imageUrl: String,
     visited: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +39,7 @@ const UserSchema = new mongoose.Schema(
       },
     ],
   },
+
   {
     timestamps: true,
   }
