@@ -116,6 +116,55 @@ export const getUserInfo = async (req, res) => {
     res.status(500).json({ message: 'No excess' })
   }
 }
+
+export const editUserInfo = async (req, res) => {
+  try {
+    const userId = req.userId
+    const { fullName, email, imageUrl } = req.body
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        fullName,
+        email,
+        imageUrl,
+      },
+      { new: true }
+    )
+
+    res.status(200).json({ success: true, updatedUser })
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'cant update user ' })
+  }
+}
+
+export const editPassword = async (req, res) => {
+  try {
+    const userId = req.userId
+    const { currentPassword, newPassword } = req.body
+    console.log('in backend', { userId, currentPassword, newPassword })
+    // find user in database by ID
+    const user = await User.findById(userId)
+
+    // compare current password with password hash in database
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash)
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Incorrect current password' })
+    }
+
+    // generate new salt and hash new password
+    const salt = await bcrypt.genSalt(10)
+    const newHash = await bcrypt.hash(newPassword, salt)
+
+    // update user's password hash in database
+    await User.findByIdAndUpdate(userId, { passwordHash: newHash })
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Cannot update password' })
+  }
+}
+
 export const addVisitedPost = async (req, res) => {
   try {
     const postId = req.params.id

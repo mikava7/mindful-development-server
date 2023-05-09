@@ -26,7 +26,7 @@ export const getAllTags = async (req, res) => {
 export const getLastFiveTags = async (req, res) => {
   try {
     // Find the last 5 posts, sorted by creation date (newest first)
-    const lastFivePosts = await Post.find().sort({ createdAt: -1 }).limit(5)
+    const lastFivePosts = await Post.find().sort({ createdAt: -1 }).limit(6)
 
     // Initialize an empty array to hold the tags from the last 5 posts
     const lastFiveTags = []
@@ -40,7 +40,7 @@ export const getLastFiveTags = async (req, res) => {
     const uniqueLastFiveTags = [...new Set(lastFiveTags)]
 
     // Return the first 5 unique tags as a JSON response
-    res.status(200).json(uniqueLastFiveTags.slice(0, 5))
+    res.status(200).json(uniqueLastFiveTags.slice(0, 6))
   } catch (error) {
     // If there is an error, return a 500 error response with a message
     res.status(500).json({ message: 'Server Error' })
