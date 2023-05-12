@@ -11,6 +11,10 @@ import {
   removeFavorite,
   editUserInfo,
   editPassword,
+  getAllUsers,
+  getUserById,
+  addFollower,
+  removeFollower,
 } from '../controllers/UserController.js'
 import { registerValidator, loginValidator } from '../validations/validation.js'
 import validationErrors from '../validations/validationErrors.js'
@@ -27,6 +31,10 @@ userRouter.post('/auth/login', loginValidator, validationErrors, loginUser)
 
 userRouter.get('/auth/user-info', authentication, getUserInfo)
 
+userRouter.get('/auth/users/:id', getUserById)
+
+userRouter.get('/auth/users', getAllUsers)
+
 userRouter.get('/posts/:id/visited', authentication, addVisitedPost)
 
 userRouter.put('/auth/:id/edit', authentication, editUserInfo)
@@ -42,5 +50,9 @@ userRouter.get('/auth/favorites/:userId', authentication, getFavorites)
 userRouter.post('/auth/favorites/:postId', authentication, addFavorite)
 
 userRouter.delete('/auth/favorites/:postId', authentication, removeFavorite)
+
+userRouter.put('/auth/follow/', authentication, addFollower)
+
+userRouter.put('/auth/unFollow', authentication, removeFollower)
 
 export default userRouter
