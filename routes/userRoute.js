@@ -15,6 +15,7 @@ import {
   getUserById,
   addFollower,
   removeFollower,
+  logoutUser,
 } from '../controllers/UserController.js'
 import { registerValidator, loginValidator } from '../validations/validation.js'
 import validationErrors from '../validations/validationErrors.js'
@@ -28,6 +29,7 @@ userRouter.post(
   registerUser
 )
 userRouter.post('/auth/login', loginValidator, validationErrors, loginUser)
+userRouter.post('/auth/logout', logoutUser)
 
 userRouter.get('/auth/user-info', authentication, getUserInfo)
 

@@ -50,20 +50,24 @@ export const getLastFiveTags = async (req, res) => {
 export const createPost = async (req, res) => {
   try {
     // get the input fields from the request body
-    const { title, content, tags, imageUrl, author } = req.body
+    const { title, content, tags, userId } = req.body
+    let { imageUrl } = req.body
+    // console.log({ title, content, tags, userId })
 
+    if (!imageUrl) {
+      imageUrl = '/mindful-development-server/uploads/financial.jpeg'
+    }
     //create new post object with input fields and author ID
     const newPost = await Post.create({
       title,
       content,
       tags,
       imageUrl,
-      author: req.userId,
+      author: userId,
     })
 
     //return newly created post object
     res.status(200).json(newPost)
-    console.log(newPost)
   } catch (error) {
     console.log(error)
     res.status(501).json({
@@ -133,10 +137,12 @@ export const removePost = async (req, res) => {
   try {
     // Get the ID of the post to remove from the request parameters
     const postId = req.params.id
+    const userId = req.body.userId
+    console.log({ postId, userId })
     // Find the post by ID and ensure that the user making the request is the author
     const removedPost = await Post.findOneAndDelete({
       _id: postId,
-      author: req.userId,
+      author: userId,
     })
 
     await User.updateMany(

@@ -9,7 +9,7 @@ const secretKey = process.env.SECRET_KEY
 export const registerUser = async (req, res) => {
   try {
     const { fullName, password, email, imageUrl } = req.body
-
+    console.log({ fullName, password, email, imageUrl })
     // generate a salt and hash the password
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
@@ -50,6 +50,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email } = req.body
+    // console.log(email)
     // find user by email
     const user = await User.findOne({ email })
 
@@ -83,12 +84,16 @@ export const loginUser = async (req, res) => {
         expiresIn: '7d',
       }
     )
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    })
 
     // remove passwordHash field from user object and return the user object with the JWT token
     const { passwordHash, ...userInfo } = user._doc
     res.json({
       ...userInfo,
-      token,
     })
   } catch (error) {
     console.log(error)
@@ -96,6 +101,11 @@ export const loginUser = async (req, res) => {
       message: 'Server error',
     })
   }
+}
+
+export const logoutUser = async (req, res) => {
+  res.clearCookie('authToken')
+  res.status(200).json({ message: 'Logged out' })
 }
 
 export const getAllUsers = async (req, res) => {

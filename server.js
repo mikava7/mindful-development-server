@@ -9,11 +9,19 @@ import commentRouter from './routes/commentsRoute.js'
 import dotenv from 'dotenv'
 dotenv.config()
 import multer from 'multer'
+import cookieParser from 'cookie-parser'
 
 const connection_string = process.env.MONGODB_URI
 const app = express()
-const port = 5000 // Use PORT value from .env file or fallback to 4000
-app.use(cors())
+const port = 5000
+app.use(cookieParser())
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+
+    credentials: true,
+  })
+)
 app.use(express.json())
 app.use(userRouter)
 app.use(postRouter)
@@ -56,7 +64,7 @@ const start = async () => {
   try {
     // Connect to the MongoDB database
     await connectToDB(connection_string)
-    console.log(connection_string)
+    // console.log(connection_string)
 
     // Start the server and listen for incoming requests
     app.listen(port, () => {

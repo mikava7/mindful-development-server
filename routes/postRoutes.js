@@ -15,13 +15,7 @@ import validationErrors from '../validations/validationErrors.js'
 
 const postRouter = express.Router()
 
-postRouter.post(
-  '/posts',
-  authentication,
-  postCreateValidation,
-  validationErrors,
-  createPost
-)
+postRouter.post('/posts', postCreateValidation, validationErrors, createPost)
 // postRouter.post("/posts", authentication, postCreateValidation, validationErrors, createPost);
 
 postRouter.get('/posts', getAllPost)
@@ -30,7 +24,7 @@ postRouter.get('/posts/:id', getPost)
 
 postRouter.put('/posts/:id', getSinglePost)
 
-postRouter.delete('/posts/:id', authentication, removePost)
+postRouter.delete('/posts/:id', removePost)
 
 postRouter.put('/likePost/:postId/', authentication, likePost)
 postRouter.delete('/unlikePost/:postId/', authentication, unLikePost)
